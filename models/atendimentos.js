@@ -40,6 +40,65 @@ class Atendimentos {
             }
         })
     }
+
+    lista(res) {
+        const sql = 'SELECT * FROM atendimentos'
+        conexao.query(sql, (erro, resultado) => {
+            if(erro) {
+                res.status(400).json(erro)
+            } else {
+                res.status(200).json(resultado)
+            }
+        })
+    }
+
+    buscaPorId(id, res) {
+        const sql = 'SELECT * FROM atendimentos WHERE id = ?'
+
+        if(!id) {
+            res.status(400).json('Favor informar um ID valido')
+        }
+
+        conexao.query(sql, id, (erro, resultado) => {
+            if(erro) {
+                res.status(400).json(erro)
+            } else {
+                res.status(200).json(resultado[0])
+            }
+        })
+    }
+
+    altera(id, valores, res) {
+        const sql = 'UPDATE atendimentos SET ? WHERE id = ?'
+
+        if (valores.data) {
+            valores.data = moment(valores.data, 'DD/MM/YYYY').format('YYYY-MM-DD HH:MM:SS')
+        }
+
+        conexao.query(sql, [valores, id], (erro, resultado) => {
+            if(erro) {
+                res.status(400).json(erro)
+            } else {
+                res.status(200).json(resultado[0])
+            }
+        })
+    }
+
+    deleta(id, res) {
+        const sql = 'DELETE FROM atendimentos WHERE id = ?'
+
+        if(!id) {
+            res.status(400).json('Favor informar um ID valido')
+        }
+
+        conexao.query(sql, id, (erro, resultado) => {
+            if(erro) {
+                res.status(400).json(erro)
+            } else {
+                res.status(200).json({ id })
+            }
+        })
+    }
 }
 
 module.exports = new Atendimentos()
